@@ -8,10 +8,16 @@ public class Hotel {
 		this.name = name;
 		this.regularCustomerRate = regularCustomerRate;
 	}
+	public String getName() {
+		return name;
+	}
+	public int getRegularCustomerRate() {
+		return regularCustomerRate;
+	}
 	
 	@Override
 	public String toString() {
-		return "Hotel: "+name+" \tRegular Customer Rates: "+regularCustomerRate;
+		return "Hotel: "+name+",\tRegular Customer Rates: $"+regularCustomerRate;
 	}
 
 }
