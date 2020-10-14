@@ -33,33 +33,44 @@ public class HotelReservation {
 
 	}
 
-	public List<Integer> findCheapestHotelIndexes(List<Hotel> hotels, List<Date> dates) {
+	public void findCheapestHotelIndexes(List<Hotel> hotels, List<Date> dates) {
 		int[] totalRates1 = totalRates(hotels, dates);
 		Arrays.sort(totalRates1);
 		int lowestRate = totalRates1[0];
 
 		int[] totalRates = totalRates(hotels, dates);
 
-		for (int i = 1; i < 3; i++) {
+		for (int i = 0; i < 3; i++) {
 			if (totalRates[i] == lowestRate)
 				indexes.add(i);
 		}
-		return indexes;
+
+	}
+
+	public int basedOnRating(List<Hotel> hotels, List<Date> dates) {
+		this.findCheapestHotelIndexes(hotels, dates);
+		int bestRating = hotels.get(0).getRatings();
+		for (Integer i : indexes) {
+			if (((Integer) hotels.get(i).getRatings()).compareTo((Integer) bestRating) > 0) {
+				bestRating = hotels.get(i).getRatings();
+			}
+
+		}
+		return bestRating;
 	}
 
 	public void printHotels(List<Hotel> hotels, List<Date> dates) {
 
 		int[] totalRates = totalRates(hotels, dates);
-		for (int i = 0; i < 3; i++) {
-			for (Integer j : indexes) {
-				if (i == j)
-					System.out.println(hotels.get(i).getName() + ",\tRating: " + hotels.get(i).getRatings()
-							+ ",\tTotal Rates: $" + totalRates[i]);
-			}
+		int bestRating = this.basedOnRating(hotels, dates);
+		for (Integer i : indexes) {
+			System.out.println("INSIDE LOOP");
+			if (hotels.get(i).getRatings() == bestRating)
+				System.out.println(hotels.get(i).getName() + ",\tRating: " + hotels.get(i).getRatings()
+						+ ",\tTotal Rates: $" + totalRates[i]);
 		}
 	}
 
-	@SuppressWarnings("finally")
 	public static void main(String[] args) {
 		System.out.println("Welcome to Hotel Reservation Program.");
 
@@ -91,11 +102,6 @@ public class HotelReservation {
 					continue;
 				else if (c == 'n' || c == 'N')
 					break;
-				else {
-					System.out.println("Invalid choice.");
-					break;
-				}
-
 			}
 		}
 		reservation.printHotels(hotels, dates);
