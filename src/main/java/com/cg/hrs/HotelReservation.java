@@ -10,17 +10,16 @@ import java.util.Scanner;
 public class HotelReservation {
 
 	public String findCheapestHotel(List<Hotel> hotels, List<Date> dates) {
-		return hotels.get(0).getName() + ",\tTotal Rates: $"
-				+ hotels.get(0).getRegularCustomerRate() * dates.size();
+		return hotels.get(0).getName() + ",\tTotal Rates: $" + hotels.get(0).getRegCustomerWeekdayRate() * dates.size();
 
 	}
 
 	public static void main(String[] args) {
 		System.out.println("Welcome to Hotel Reservation Program.");
 
-		Hotel lakewood = new Hotel("Lakewood", 110);
-		Hotel bridgewood = new Hotel("Bridgewood", 160);
-		Hotel ridgewood = new Hotel("Ridgewood", 220);
+		Hotel lakewood = new Hotel("Lakewood", 110, 90);
+		Hotel bridgewood = new Hotel("Bridgewood", 160, 50);
+		Hotel ridgewood = new Hotel("Ridgewood", 220, 150);
 		List<Hotel> hotels = new ArrayList<Hotel>();
 		hotels.add(lakewood);
 		hotels.add(bridgewood);
