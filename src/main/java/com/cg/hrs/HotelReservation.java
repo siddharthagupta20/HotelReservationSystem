@@ -10,8 +10,20 @@ import java.util.Scanner;
 public class HotelReservation {
 
 	public String findCheapestHotel(List<Hotel> hotels, List<Date> dates) {
-		return hotels.get(0).getName() + ",\tTotal Rates: $" + hotels.get(0).getRegCustomerWeekdayRate() * dates.size();
-
+		Integer lowestRates = 1999999999;
+		SimpleDateFormat day = new SimpleDateFormat("EEE");
+		for (Hotel h : hotels) {
+			int totalRates = 0;
+			for (Date d : dates) {
+				if (day.format(d).equalsIgnoreCase("sat") || day.format(d).equalsIgnoreCase("sun"))
+					totalRates += h.getRegCustomerWeekendRate();
+				else
+					totalRates += h.getRegCustomerWeekdayRate();
+			}
+			if (lowestRates.compareTo(totalRates) > 0)
+				lowestRates = totalRates;
+		}
+		return hotels.get(0).getName() + ",\tTotal Rates: $" + lowestRates;
 	}
 
 	public static void main(String[] args) {
@@ -34,7 +46,8 @@ public class HotelReservation {
 			System.out.println("Enter date:");
 			String inputDate = sc.next();
 			try {
-				dates.add(dateFormat.parse(inputDate));
+				Date d = dateFormat.parse(inputDate);
+				dates.add(d);
 			} catch (ParseException e) {
 				System.out.println("Invalid date input.");
 			} finally {
