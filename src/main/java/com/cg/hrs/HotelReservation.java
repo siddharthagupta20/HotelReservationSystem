@@ -4,8 +4,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class HotelReservation {
@@ -13,17 +16,18 @@ public class HotelReservation {
 	List<Hotel> hotels;
 	List<Date> dates;
 	boolean regular;
+	Scanner sc;
 
 	public HotelReservation() {
 		this.cheapestHotelIndexes = new ArrayList<Integer>();
 		hotels = new ArrayList<Hotel>();
 		dates = new ArrayList<Date>();
-		regular=true;
+		regular = true;
+		sc = new Scanner(System.in);
 	}
 
 	public void enterDates() {
 
-		Scanner sc = new Scanner(System.in);
 		System.out.println("Enter the dates of Format[ddMMMyyyy(day)]: ");
 		SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMMyyyy(EEE)");
 		while (true) {
@@ -43,8 +47,26 @@ public class HotelReservation {
 					break;
 			}
 		}
-		sc.close();
 
+	}
+
+	public void getCustomerType() {
+		while (true) {
+			try {
+				System.out.println("Enter customer type(Regular/Reward):");
+				String type = this.sc.next();
+				if (type.toLowerCase().contains("regular")) {
+					this.regular = true;
+					break;
+				} else if (type.toLowerCase().contains("reward")) {
+					this.regular = false;
+					break;
+				} else
+					throw new CustomerTypeException("Not a valid customer type.");
+			} catch (CustomerTypeException e) {
+				System.out.println(e.getMessage());
+			}
+		}
 	}
 
 	public int[] totalRates() {
@@ -80,8 +102,7 @@ public class HotelReservation {
 
 	public void findCheapestHotelIndexes() {
 		int[] totalRates1 = totalRates();
-		Arrays.sort(totalRates1);
-		int lowestRate = totalRates1[0];
+		int lowestRate=Arrays.stream(totalRates1).sorted().findFirst().orElse(0);
 
 		int[] totalRates = totalRates();
 
@@ -102,18 +123,11 @@ public class HotelReservation {
 
 		}
 		return bestRating;
+		
 	}
 
 	public Hotel getBestRatedHotel() {
-		int bestRating = hotels.get(0).getRatings();
-		for (int i = 0; i < hotels.size(); i++) {
-			if (((Integer) hotels.get(i).getRatings()).compareTo((Integer) bestRating) > 0)
-				bestRating = hotels.get(i).getRatings();
-		}
-		for (Hotel h : hotels)
-			if (h.getRatings() == bestRating)
-				return h;
-		return null;
+		return hotels.stream().max(Comparator.comparing(Hotel::getRatings)).orElse(null);
 	}
 
 	public void printCheapHotels() {
@@ -132,15 +146,16 @@ public class HotelReservation {
 
 	public static void main(String[] args) {
 		System.out.println("Welcome to Hotel Reservation Program.");
+
 		HotelReservation reservation = new HotelReservation();
+
 		Hotel lakewood = new Hotel("Lakewood", 110, 90, 3, 80, 80);
 		Hotel bridgewood = new Hotel("Bridgewood", 160, 50, 4, 110, 50);
 		Hotel ridgewood = new Hotel("Ridgewood", 220, 150, 5, 100, 40);
 		reservation.hotels.add(lakewood);
 		reservation.hotels.add(bridgewood);
 		reservation.hotels.add(ridgewood);
-
-		reservation.regular=false;
+		reservation.getCustomerType();
 		reservation.enterDates();
 		reservation.printCheapHotels();
 	}
