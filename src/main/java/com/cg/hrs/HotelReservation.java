@@ -9,13 +9,44 @@ import java.util.List;
 import java.util.Scanner;
 
 public class HotelReservation {
-	List<Integer> indexes;
+	List<Integer> cheapestHotelIndexes;
+	List<Hotel> hotels;
+	List<Date> dates;
 
 	public HotelReservation() {
-		this.indexes = new ArrayList<Integer>();
+		this.cheapestHotelIndexes = new ArrayList<Integer>();
+		hotels=new ArrayList<Hotel>();
+		dates=new ArrayList<Date>();
 	}
+	
+	public void enterDates() {
 
-	public int[] totalRates(List<Hotel> hotels, List<Date> dates) {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Enter the dates of Format[ddMMMyyyy(day)]: ");
+		SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMMyyyy(EEE)");
+		while (true) {
+			System.out.println("Enter date:");
+			String inputDate = sc.next();
+			try {
+				Date d = dateFormat.parse(inputDate);
+				this.dates.add(d);
+			} catch (ParseException e) {
+				System.out.println("Invalid date input.");
+			} finally {
+				System.out.println("Want to enter another date:(Y/N)");
+				char c = sc.next().charAt(0);
+				if (c == 'y' || c == 'Y')
+					continue;
+				else if (c == 'n' || c == 'N')
+					break;
+			}
+		}
+		sc.close();
+		
+	}
+	
+
+	public int[] totalRates() {
 		SimpleDateFormat day = new SimpleDateFormat("EEE");
 		int totalRates[] = new int[3];
 		int index = 0;
@@ -33,24 +64,24 @@ public class HotelReservation {
 
 	}
 
-	public void findCheapestHotelIndexes(List<Hotel> hotels, List<Date> dates) {
-		int[] totalRates1 = totalRates(hotels, dates);
+	public void findCheapestHotelIndexes() {
+		int[] totalRates1 = totalRates();
 		Arrays.sort(totalRates1);
 		int lowestRate = totalRates1[0];
 
-		int[] totalRates = totalRates(hotels, dates);
+		int[] totalRates = totalRates();
 
 		for (int i = 0; i < 3; i++) {
 			if (totalRates[i] == lowestRate)
-				indexes.add(i);
+				cheapestHotelIndexes.add(i);
 		}
 
 	}
 
-	public int basedOnRating(List<Hotel> hotels, List<Date> dates) {
-		this.findCheapestHotelIndexes(hotels, dates);
+	public int basedOnRating() {
+		this.findCheapestHotelIndexes();
 		int bestRating = hotels.get(0).getRatings();
-		for (Integer i : indexes) {
+		for (Integer i : cheapestHotelIndexes) {
 			if (((Integer) hotels.get(i).getRatings()).compareTo((Integer) bestRating) > 0) {
 				bestRating = hotels.get(i).getRatings();
 			}
@@ -58,55 +89,49 @@ public class HotelReservation {
 		}
 		return bestRating;
 	}
-
-	public void printHotels(List<Hotel> hotels, List<Date> dates) {
-
-		int[] totalRates = totalRates(hotels, dates);
-		int bestRating = this.basedOnRating(hotels, dates);
-		for (Integer i : indexes) {
-			System.out.println("INSIDE LOOP");
-			if (hotels.get(i).getRatings() == bestRating)
-				System.out.println(hotels.get(i).getName() + ",\tRating: " + hotels.get(i).getRatings()
-						+ ",\tTotal Rates: $" + totalRates[i]);
+	
+	public Hotel getBestRatedHotel() {
+		int bestRating=hotels.get(0).getRatings();
+		for(int i=0;i<hotels.size();i++) {
+			if(((Integer)hotels.get(i).getRatings()).compareTo((Integer)bestRating)>0)
+				bestRating=hotels.get(i).getRatings();
 		}
+		for(Hotel h: hotels)
+			if(h.getRatings()==bestRating)
+				return h;
+		return null;
+	}
+
+	public void printCheapHotels() {
+
+		int[] totalRates = totalRates();
+		int bestRating = this.basedOnRating();
+		for (Integer i : cheapestHotelIndexes) {
+			if (hotels.get(i).getRatings() == bestRating)
+				this.printHotel(hotels.get(i), totalRates[i]);
+		}
+	}
+	public void printHotel(Hotel h, int totalRates) {
+		System.out.println(h.getName() + ",\tRating: " + h.getRatings()
+				+ ",\tTotal Rates: $" + totalRates);
 	}
 
 	public static void main(String[] args) {
 		System.out.println("Welcome to Hotel Reservation Program.");
-
+		HotelReservation reservation = new HotelReservation();
 		Hotel lakewood = new Hotel("Lakewood", 110, 90, 3);
 		Hotel bridgewood = new Hotel("Bridgewood", 160, 50, 4);
 		Hotel ridgewood = new Hotel("Ridgewood", 220, 150, 5);
-		List<Hotel> hotels = new ArrayList<Hotel>();
-		hotels.add(lakewood);
-		hotels.add(bridgewood);
-		hotels.add(ridgewood);
-		HotelReservation reservation = new HotelReservation();
+		reservation.hotels.add(lakewood);
+		reservation.hotels.add(bridgewood);
+		reservation.hotels.add(ridgewood);
+		
+		
+		for(int i=0;i<reservation.hotels.size();i++)
+			if(reservation.getBestRatedHotel()==reservation.hotels.get(i))
+				reservation.printHotel(reservation.hotels.get(i), reservation.totalRates()[i]);
 
-		Scanner sc = new Scanner(System.in);
-		System.out.println("Enter the dates of Format[ddMMMyyyy(day)]: ");
-		SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMMyyyy(EEE)");
-		List<Date> dates = new ArrayList<Date>();
-		while (true) {
-			System.out.println("Enter date:");
-			String inputDate = sc.next();
-			try {
-				Date d = dateFormat.parse(inputDate);
-				dates.add(d);
-			} catch (ParseException e) {
-				System.out.println("Invalid date input.");
-			} finally {
-				System.out.println("Want to enter another date:(Y/N)");
-				char c = sc.next().charAt(0);
-				if (c == 'y' || c == 'Y')
-					continue;
-				else if (c == 'n' || c == 'N')
-					break;
-			}
-		}
-		reservation.printHotels(hotels, dates);
 
-		sc.close();
 	}
 
 }
