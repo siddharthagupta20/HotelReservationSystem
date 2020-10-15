@@ -15,10 +15,10 @@ public class HotelReservation {
 
 	public HotelReservation() {
 		this.cheapestHotelIndexes = new ArrayList<Integer>();
-		hotels=new ArrayList<Hotel>();
-		dates=new ArrayList<Date>();
+		hotels = new ArrayList<Hotel>();
+		dates = new ArrayList<Date>();
 	}
-	
+
 	public void enterDates() {
 
 		Scanner sc = new Scanner(System.in);
@@ -42,9 +42,8 @@ public class HotelReservation {
 			}
 		}
 		sc.close();
-		
+
 	}
-	
 
 	public int[] totalRates() {
 		SimpleDateFormat day = new SimpleDateFormat("EEE");
@@ -89,15 +88,15 @@ public class HotelReservation {
 		}
 		return bestRating;
 	}
-	
+
 	public Hotel getBestRatedHotel() {
-		int bestRating=hotels.get(0).getRatings();
-		for(int i=0;i<hotels.size();i++) {
-			if(((Integer)hotels.get(i).getRatings()).compareTo((Integer)bestRating)>0)
-				bestRating=hotels.get(i).getRatings();
+		int bestRating = hotels.get(0).getRatings();
+		for (int i = 0; i < hotels.size(); i++) {
+			if (((Integer) hotels.get(i).getRatings()).compareTo((Integer) bestRating) > 0)
+				bestRating = hotels.get(i).getRatings();
 		}
-		for(Hotel h: hotels)
-			if(h.getRatings()==bestRating)
+		for (Hotel h : hotels)
+			if (h.getRatings() == bestRating)
 				return h;
 		return null;
 	}
@@ -111,27 +110,23 @@ public class HotelReservation {
 				this.printHotel(hotels.get(i), totalRates[i]);
 		}
 	}
+
 	public void printHotel(Hotel h, int totalRates) {
-		System.out.println(h.getName() + ",\tRating: " + h.getRatings()
-				+ ",\tTotal Rates: $" + totalRates);
+		System.out.println(h.getName() + ",\tRating: " + h.getRatings() + ",\tTotal Rates: $" + totalRates);
 	}
 
 	public static void main(String[] args) {
 		System.out.println("Welcome to Hotel Reservation Program.");
 		HotelReservation reservation = new HotelReservation();
-		Hotel lakewood = new Hotel("Lakewood", 110, 90, 3);
-		Hotel bridgewood = new Hotel("Bridgewood", 160, 50, 4);
-		Hotel ridgewood = new Hotel("Ridgewood", 220, 150, 5);
+		Hotel lakewood = new Hotel("Lakewood", 110, 90, 3, 80, 80);
+		Hotel bridgewood = new Hotel("Bridgewood", 160, 50, 4, 110, 50);
+		Hotel ridgewood = new Hotel("Ridgewood", 220, 150, 5, 100, 40);
 		reservation.hotels.add(lakewood);
 		reservation.hotels.add(bridgewood);
 		reservation.hotels.add(ridgewood);
-		
-		
-		for(int i=0;i<reservation.hotels.size();i++)
-			if(reservation.getBestRatedHotel()==reservation.hotels.get(i))
-				reservation.printHotel(reservation.hotels.get(i), reservation.totalRates()[i]);
 
-
+		for (int i = 0; i < reservation.hotels.size(); i++)
+			System.out.println(reservation.hotels.get(i));
 	}
 
 }
