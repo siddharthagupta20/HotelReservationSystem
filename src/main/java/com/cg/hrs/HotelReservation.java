@@ -12,11 +12,13 @@ public class HotelReservation {
 	List<Integer> cheapestHotelIndexes;
 	List<Hotel> hotels;
 	List<Date> dates;
+	boolean regular;
 
 	public HotelReservation() {
 		this.cheapestHotelIndexes = new ArrayList<Integer>();
 		hotels = new ArrayList<Hotel>();
 		dates = new ArrayList<Date>();
+		regular=true;
 	}
 
 	public void enterDates() {
@@ -49,15 +51,28 @@ public class HotelReservation {
 		SimpleDateFormat day = new SimpleDateFormat("EEE");
 		int totalRates[] = new int[3];
 		int index = 0;
-		for (Hotel h : hotels) {
-			totalRates[index] = 0;
-			for (Date d : dates) {
-				if (day.format(d).equalsIgnoreCase("sat") || day.format(d).equalsIgnoreCase("sun"))
-					totalRates[index] += h.getRegCustomerWeekendRate();
-				else
-					totalRates[index] += h.getRegCustomerWeekdayRate();
+		if (regular) {
+			for (Hotel h : hotels) {
+				totalRates[index] = 0;
+				for (Date d : dates) {
+					if (day.format(d).equalsIgnoreCase("sat") || day.format(d).equalsIgnoreCase("sun"))
+						totalRates[index] += h.getRegCustomerWeekendRate();
+					else
+						totalRates[index] += h.getRegCustomerWeekdayRate();
+				}
+				index++;
 			}
-			index++;
+		} else {
+			for (Hotel h : hotels) {
+				totalRates[index] = 0;
+				for (Date d : dates) {
+					if (day.format(d).equalsIgnoreCase("sat") || day.format(d).equalsIgnoreCase("sun"))
+						totalRates[index] += h.getSpecialWeekendRates();
+					else
+						totalRates[index] += h.getSpecialWeekdayRates();
+				}
+				index++;
+			}
 		}
 		return totalRates;
 
@@ -125,8 +140,9 @@ public class HotelReservation {
 		reservation.hotels.add(bridgewood);
 		reservation.hotels.add(ridgewood);
 
-		for (int i = 0; i < reservation.hotels.size(); i++)
-			System.out.println(reservation.hotels.get(i));
+		reservation.regular=false;
+		reservation.enterDates();
+		reservation.printCheapHotels();
 	}
 
 }
