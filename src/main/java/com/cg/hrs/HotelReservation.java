@@ -100,7 +100,7 @@ public class HotelReservation {
 
 	public void findCheapestHotelIndexes() {
 		int[] totalRates1 = totalRates();
-		int lowestRate=Arrays.stream(totalRates1).sorted().findFirst().orElse(0);
+		int lowestRate = Arrays.stream(totalRates1).sorted().findFirst().orElse(0);
 
 		int[] totalRates = totalRates();
 
@@ -121,25 +121,27 @@ public class HotelReservation {
 
 		}
 		return bestRating;
-		
+
 	}
 
+	// using streams
 	public Hotel getBestRatedHotel() {
 		return hotels.stream().max(Comparator.comparing(Hotel::getRatings)).orElse(null);
 	}
 
-	public void printCheapHotels() {
-
+	public String printCheapHotels() {
+		StringBuilder str = new StringBuilder();
 		int[] totalRates = totalRates();
 		int bestRating = this.basedOnRating();
 		for (Integer i : cheapestHotelIndexes) {
 			if (hotels.get(i).getRatings() == bestRating)
-				this.printHotel(hotels.get(i), totalRates[i]);
+				str.append(this.printHotel(hotels.get(i), totalRates[i]));
 		}
+		return str.toString();
 	}
 
-	public void printHotel(Hotel h, int totalRates) {
-		System.out.println(h.getName() + ",\tRating: " + h.getRatings() + ",\tTotal Rates: $" + totalRates);
+	public String printHotel(Hotel h, int totalRates) {
+		return h.getName() + ",\tRating: " + h.getRatings() + ",\tTotal Rates: $" + totalRates;
 	}
 
 	public static void main(String[] args) {
@@ -155,7 +157,7 @@ public class HotelReservation {
 		reservation.hotels.add(ridgewood);
 		reservation.getCustomerType();
 		reservation.enterDates();
-		reservation.printCheapHotels();
+		System.out.println(reservation.printCheapHotels());
 	}
 
 }
