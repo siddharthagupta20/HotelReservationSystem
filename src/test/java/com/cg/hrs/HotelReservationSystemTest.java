@@ -11,7 +11,6 @@ import java.util.List;
 import org.junit.Test;
 
 public class HotelReservationSystemTest {
-
 	@Test
 	public void givenDatesShouldReturnCheapestHotel() {
 		Hotel lakewood = new Hotel("Lakewood", 110);
@@ -22,7 +21,6 @@ public class HotelReservationSystemTest {
 		hotels.add(bridgewood);
 		hotels.add(ridgewood);
 		HotelReservation reservation = new HotelReservation();
-
 		List<Date> datesList = new ArrayList<>();
 		SimpleDateFormat ft = new SimpleDateFormat("ddMMMyyyy(EEE)");
 		try {
