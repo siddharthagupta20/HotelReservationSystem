@@ -13,24 +13,31 @@ import org.junit.Test;
 public class HotelReservationSystemTest {
 	@Test
 	public void givenDatesShouldReturnCheapestHotel() {
-		Hotel lakewood = new Hotel("Lakewood", 110);
-		Hotel bridgewood = new Hotel("Bridgewood", 160);
-		Hotel ridgewood = new Hotel("Ridgewood", 220);
-		List<Hotel> hotels = new ArrayList<Hotel>();
-		hotels.add(lakewood);
-		hotels.add(bridgewood);
-		hotels.add(ridgewood);
 		HotelReservation reservation = new HotelReservation();
+
+		Hotel lakewood = new Hotel("Lakewood", 110, 90, 3, 80, 80);
+		Hotel bridgewood = new Hotel("Bridgewood", 160, 50, 4, 110, 50);
+		Hotel ridgewood = new Hotel("Ridgewood", 220, 150, 5, 100, 40);
+		reservation.hotels.add(lakewood);
+		reservation.hotels.add(bridgewood);
+		reservation.hotels.add(ridgewood);
 		List<Date> datesList = new ArrayList<>();
 		SimpleDateFormat ft = new SimpleDateFormat("ddMMMyyyy(EEE)");
 		try {
 			datesList.add(ft.parse("18oct2020(sun)"));
 			datesList.add(ft.parse("19oct2020(mon)"));
-			datesList.add(ft.parse("20oct2020(sat)"));
+			datesList.add(ft.parse("20oct2020(tue)"));
 		} catch (ParseException e) {
 			System.out.println(e.getMessage());
 		}
-		assertEquals("Lakewood,\tTotal Rates: $330", reservation.findCheapestHotel(hotels, datesList));
+
+		for (int i = 0; i < 3; i++) {
+			reservation.dates.add(datesList.get(i));
+		}
+		reservation.regular = false;
+
+		assertEquals("Ridgewood,\tRating: 5,\tTotal Rates: $240", reservation.printCheapHotels());
+
 	}
 
 }
