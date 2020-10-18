@@ -11,7 +11,6 @@ import java.util.List;
 import org.junit.Test;
 
 public class HotelReservationSystemTest {
-
 	@Test
 	public void givenDatesShouldReturnCheapestHotel() {
 		HotelReservation reservation = new HotelReservation();
@@ -22,7 +21,6 @@ public class HotelReservationSystemTest {
 		reservation.hotels.add(lakewood);
 		reservation.hotels.add(bridgewood);
 		reservation.hotels.add(ridgewood);
-
 		List<Date> datesList = new ArrayList<>();
 		SimpleDateFormat ft = new SimpleDateFormat("ddMMMyyyy(EEE)");
 		try {
@@ -39,6 +37,7 @@ public class HotelReservationSystemTest {
 		reservation.regular = false;
 
 		assertEquals("Ridgewood,\tRating: 5,\tTotal Rates: $240", reservation.printCheapHotels());
+
 	}
 
 }
